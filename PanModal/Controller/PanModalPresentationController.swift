@@ -841,40 +841,38 @@ private extension PanModalPresentationController {
      We have to set a custom path for corner rounding
      because we render the dragIndicator outside of view bounds
      */
-  func addRoundedCorners(to view: UIView) {
-    let radius = presentable?.cornerRadius ?? 0
-    
-    if #available(iOS 11.0, *) {
-        view.layer.cornerRadius = radius
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        view.layer.masksToBounds = true
-    } else {
-        let maskPath = UIBezierPath(roundedRect: view.bounds,
-                                    byRoundingCorners: [.topLeft, .topRight],
-                                    cornerRadii: CGSize(width: radius, height: radius))
-        let maskLayer = CAShapeLayer()
-        maskLayer.path = maskPath.cgPath
-        view.layer.mask = maskLayer
-    }
-    
-    view.layer.shouldRasterize = true
-    view.layer.rasterizationScale = UIScreen.main.scale
-    
-    if #available(iOS 19.0, *) {
-        let subviews = view.subviews
-        view.subviews.forEach { $0.removeFromSuperview() }
-        subviews.forEach { view.addSubview($0) }
-        
-        DispatchQueue.main.async {
-            if #available(iOS 11.0, *) {
-                view.layer.cornerRadius = radius
-                view.layer.masksToBounds = true
-            }
-        }
-    }
-}
-
-`
+     func addRoundedCorners(to view: UIView) {
+       let radius = presentable?.cornerRadius ?? 0
+       
+       if #available(iOS 11.0, *) {
+           view.layer.cornerRadius = radius
+           view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+           view.layer.masksToBounds = true
+       } else {
+           let maskPath = UIBezierPath(roundedRect: view.bounds,
+                                       byRoundingCorners: [.topLeft, .topRight],
+                                       cornerRadii: CGSize(width: radius, height: radius))
+           let maskLayer = CAShapeLayer()
+           maskLayer.path = maskPath.cgPath
+           view.layer.mask = maskLayer
+       }
+       
+       view.layer.shouldRasterize = true
+       view.layer.rasterizationScale = UIScreen.main.scale
+       
+       if #available(iOS 19.0, *) {
+           let subviews = view.subviews
+           view.subviews.forEach { $0.removeFromSuperview() }
+           subviews.forEach { view.addSubview($0) }
+           
+           DispatchQueue.main.async {
+               if #available(iOS 11.0, *) {
+                   view.layer.cornerRadius = radius
+                   view.layer.masksToBounds = true
+               }
+           }
+       }
+   }
 
     /**
      Draws a path around the drag indicator view
